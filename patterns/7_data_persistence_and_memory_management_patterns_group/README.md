@@ -31,21 +31,25 @@ Data Persistence & Memory Management Patterns は、LLM アプリケーション
 ## ユースケース例
 
 ### 1. 長期サポートチャットボット  
+
 - **Contextual Memory Segmentation** でユーザの登録情報・過去対応履歴を長期記憶に保持  
 - **Structured Conversation History Store** で全ログをスキーマ化し、検索・ナレッジ共有を実現  
 - **Memory Eviction & Tiering** で古い履歴を自動アーカイブし、ストレージを効率化  
 
 ### 2. RAG（Retrieval-Augmented Generation）ナレッジベース  
+
 - **Vector-Based Knowledge Cache** を使い、過去要約やFAQを埋め込み検索で高速抽出  
 - **Time-Based External Prompt Log** でプロンプトを外部ストアに安全保存し、履歴参照コストを最小化  
 - **Snapshot & Replay** により、重要ナレッジ更新時の状態をスナップショットして差分解析  
 
 ### 3. マルチステップ業務ワークフロー  
+
 - **Event-Driven Memory Updates** で各ステップ完了時にワークフロー状態をメモリに反映  
 - **Anonymized Audit Trail** で機密データをマスキングしてワークフロー履歴をコンプライアンス保存  
 - **Snapshot & Replay** により、失敗ステップを再現して問題原因を素早く特定  
 
 ### 4. パーソナライズ学習プラットフォーム  
+
 - **Contextual Memory Segmentation** で学習進捗（短期）と学習者プロファイル（長期）を分離管理  
 - **Memory Eviction & Tiering** で学習セッション終了後、短期メモリのみクリアし長期記録は保持  
 - **Vector-Based Knowledge Cache** で類似学習素材や解説を埋め込み検索し、即時提示  

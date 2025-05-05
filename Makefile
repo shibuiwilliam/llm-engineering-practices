@@ -18,5 +18,5 @@ rm_ds_store:
 
 .PHONY: format_markdown
 format_markdown:
-	find $(PATTERN_DIR) -name "*.md" -exec markdownlint {} \;
-	find $(PATTERN_DIR) -name "*.md" -exec markdownlint --fix {} \;
+	find $(PATTERN_DIR) -name "*.md" -exec markdownlint-cli2 {} \;
+	find $(PATTERN_DIR) -name "*.md" -exec markdownlint-cli2 --fix {} \;

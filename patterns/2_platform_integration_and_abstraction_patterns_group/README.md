@@ -45,21 +45,25 @@ Platform Integration & Abstraction Patterns は、LLM（大規模言語モデル
 ## ユースケース例
 
 ### 1. マルチテナント SaaS バックエンド  
+
 - **Proxy for Rate-Limited Access** でテナントごとのレート制御を集約  
 - **Priority-Based Throttling** で企業プラン優先／フリーユーザ抑制  
 - **OpenAI Gateway** で API キー管理・監査ログを一元化  
 
 ### 2. 分散マイクロサービスアーキテクチャ  
+
 - **Bridge for Storage & Execution** でキャッシュ層を切り離し、モデル呼び出しとデータ保存を最適化  
 - **CQRS for LLM** で読み取りキャッシュと書き込み処理を分離  
 - **Streaming Response Handling** で複数サービスへのリアルタイム通知  
 
 ### 3. 自律エージェントプラットフォーム  
+
 - **Agent Abstraction** により、LLM＋ツール呼び出しを統一操作  
 - **Orchestration Engine** で複雑なタスクフロー（分岐・ループ）を宣言的に定義  
 - **Composable Component Framework** で新しいツールプラグインを高速追加  
 
 ### 4. グローバル可用性重視サービス  
+
 - **Multi-Region Fail-over** で地理的に最寄りのモデルリージョンへルーティング  
 - **Load Balancing Multi-Model** で各リージョン内のインスタンスに負荷分散  
 - **Layered Modularity & Core Abstraction** でグローバルコアと地域固有拡張を共存  

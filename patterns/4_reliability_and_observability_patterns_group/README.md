@@ -34,16 +34,19 @@ Reliability & Observability Patterns は、LLM システムを 24/7 で安定運
 ## ユースケース例
 
 ### 1. グローバル Chat-SaaS プラットフォーム  
+
 - Multi-Region Fail-over でリージョン障害時も自動フェイルオーバー  
 - Circuit Breaker で一時的 API エラーを局所化  
 - Structured Logging と Tracing でユーザ応答レイテンシを詳しく分析  
 
 ### 2. 金融業務向け AI アシスタント  
+
 - Timeout & Fallback で定時応答を保証  
 - Synthetic Monitoring で深夜バッチ要約ジョブの稼働確認  
 - Dead Man’s Switch でサイレント障害発生を即時通知  
 
 ### 3. 大量バッチドキュメント要約サービス  
+
 - Retry with Adaptive Back-off でレート制限・一時的ネットワーク障害を吸収  
 - Prompt Performance Profiling で高コストプロンプトを特定・最適化  
 - Prompt Drift Detection で定期的に品質検証し、ノイズ増加に早期対応  

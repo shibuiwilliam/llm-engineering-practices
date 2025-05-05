@@ -43,22 +43,25 @@ Basic Foundation Patterns は、LLM（大規模言語モデル）API を安全�
 ## ユースケース例
 
 ### 1. カスタマーサポートチャットボット  
+
 - **Dependency Injection** でテストダブルを挿し替え  
 - **Timeout & Fallback** で応答遅延時も定型文を返却  
 - **Structured Logging** で問い合わせ履歴を可視化  
 
 ### 2. パーソナライズドニュース配信  
+
 - **Abstract Factory** で複数モデル（要約／推薦）を統一呼び出し  
 - **Role-Based Prompt Control** で購読プラン別に制限  
 - **Structured Output** で記事メタデータを安全に解析  
 
 ### 3. ドキュメント要約バッチ処理  
+
 - **Retry with Adaptive Back-off** で一時的 API エラーを吸収  
 - **Prompt Unit Testing** で要約品質を CI でガード  
 - **Inverted Structured Output** で動的スキーマ生成  
 
 ### 4. リアルタイム対話型アプリ  
+
 - **Streaming Output** で文字起こしや翻訳を高速表示  
 - **Structured Prompt Template** でマルチモーダル入力を整理  
 - **Timeout & Fallback** で途中切断時の再接続に対応  
-
