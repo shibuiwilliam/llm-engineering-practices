@@ -1,0 +1,71 @@
+@startuml structured_prompt_template
+
+skinparam classAttributeIconSize 0
+skinparam packageStyle rectangle
+
+package "Prompt Template System" {
+    class PromptTemplate {
+        +templateContent: String
+        +variables: Map<String, Any>
+        +render(): String
+        +validate(): Boolean
+    }
+
+    class TemplateManager {
+        +templates: Map<String, PromptTemplate>
+        +loadTemplate(name: String): PromptTemplate
+        +saveTemplate(name: String, template: PromptTemplate): void
+        +validateAllTemplates(): Boolean
+    }
+
+    class TemplateRenderer {
+        +render(template: PromptTemplate, context: Map<String, Any>): String
+        +validateVariables(template: PromptTemplate, context: Map<String, Any>): Boolean
+    }
+
+    class LLMClient {
+        +sendPrompt(prompt: String): Response
+    }
+}
+
+package "Template Storage" {
+    interface TemplateStorage {
+        +load(name: String): String
+        +save(name: String, content: String): void
+    }
+
+    class FileTemplateStorage {
+        -basePath: String
+        +load(name: String): String
+        +save(name: String, content: String): void
+    }
+}
+
+PromptTemplate --> TemplateStorage : uses
+TemplateManager --> PromptTemplate : manages
+TemplateManager --> TemplateStorage : uses
+TemplateRenderer --> PromptTemplate : processes
+LLMClient --> TemplateRenderer : uses
+
+note right of PromptTemplate
+  Template format:
+  - YAML/JSON structure
+  - Variable placeholders
+  - Role-based sections
+end note
+
+note right of TemplateManager
+  Handles:
+  - Template loading
+  - Version control
+  - Validation
+end note
+
+note right of TemplateRenderer
+  Processes:
+  - Variable substitution
+  - Template validation
+  - Context injection
+end note
+
+@enduml 

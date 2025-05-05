@@ -1,0 +1,63 @@
+@startuml structured_logging_for_llm_ops_pattern
+
+skinparam componentStyle uml2
+skinparam backgroundColor white
+skinparam handwritten false
+
+title Structured Logging for LLM Ops Pattern
+
+package "LLM Application" {
+    [LLM Client] as client
+    [Structured Logger] as logger
+    [Log Masking Service] as masking
+}
+
+package "Logging Infrastructure" {
+    [Log Aggregator] as aggregator
+    database "Log Storage" as storage
+    [Log Analysis Tools] as analysis
+}
+
+package "Monitoring & Alerting" {
+    [Alert Manager] as alert
+    [Metrics Dashboard] as dashboard
+}
+
+' Relationships
+client --> logger : "Logs LLM interactions"
+logger --> masking : "Sends logs for masking"
+masking --> aggregator : "Sends masked logs"
+aggregator --> storage : "Stores logs"
+storage --> analysis : "Provides data"
+analysis --> dashboard : "Updates metrics"
+analysis --> alert : "Triggers alerts"
+
+note right of logger
+  Structured log format:
+  - timestamp
+  - prompt_id
+  - user_id
+  - model
+  - temperature
+  - input_text
+  - output_text
+  - latency_ms
+  - status_code
+end note
+
+note right of masking
+  Handles:
+  - PII masking
+  - Sensitive data filtering
+  - Log sanitization
+end note
+
+note right of analysis
+  Provides:
+  - Quality metrics
+  - Performance analysis
+  - Error detection
+  - Usage patterns
+end note
+
+@enduml 
