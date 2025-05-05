@@ -1,7 +1,7 @@
 # Basic Foundation Patterns
 
 **概要**  
-Basic Foundation Patterns は、LLM（大規模言語モデル）API を安全かつ確実にアプリケーションに組み込むための“土台”となる共通基盤パターン群です。  
+Basic Foundation Patterns は、LLM（大規模言語モデル）のAPI を安全かつ確実にアプリケーションに組み込むための“土台”となる共通基盤パターン群です。
 これらのパターンを採用することで、後続の高度な機能や運用パターンをリスクなく積み上げることができます。
 
 - **安定性**：外部 API の遅延・障害に強い設計  
@@ -37,31 +37,3 @@ Basic Foundation Patterns は、LLM（大規模言語モデル）API を安全�
     期待する入力⇔出力をテストケース化し、CI 上で自動回帰テストを回すユニットテストパターン。  
 12. **Streaming Output**  
     ストリーミング API を活用し、生成中のトークンを即座に UI にプッシュして応答性を高める UX 強化パターン。
-
----
-
-## ユースケース例
-
-### 1. カスタマーサポートチャットボット  
-
-- **Dependency Injection** でテストダブルを挿し替え  
-- **Timeout & Fallback** で応答遅延時も定型文を返却  
-- **Structured Logging** で問い合わせ履歴を可視化  
-
-### 2. パーソナライズドニュース配信  
-
-- **Abstract Factory** で複数モデル（要約／推薦）を統一呼び出し  
-- **Role-Based Prompt Control** で購読プラン別に制限  
-- **Structured Output** で記事メタデータを安全に解析  
-
-### 3. ドキュメント要約バッチ処理  
-
-- **Retry with Adaptive Back-off** で一時的 API エラーを吸収  
-- **Prompt Unit Testing** で要約品質を CI でガード  
-- **Inverted Structured Output** で動的スキーマ生成  
-
-### 4. リアルタイム対話型アプリ  
-
-- **Streaming Output** で文字起こしや翻訳を高速表示  
-- **Structured Prompt Template** でマルチモーダル入力を整理  
-- **Timeout & Fallback** で途中切断時の再接続に対応  
