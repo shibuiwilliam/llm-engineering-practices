@@ -1,0 +1,69 @@
+@startuml LLM Gateway Pattern
+
+skinparam componentStyle uml2
+skinparam backgroundColor white
+skinparam handwritten false
+
+title LLM Gateway Pattern
+
+' Components
+package "Client Applications" {
+    [Frontend Application] as Frontend
+    [Microservice A] as MicroA
+    [Microservice B] as MicroB
+}
+
+package "LLM Gateway" {
+    [API Gateway] as Gateway
+    [Authentication Service] as Auth
+    [Rate Limiter] as RateLimit
+    [Cache Service] as Cache
+    [Logging Service] as Logging
+    [Error Handler] as ErrorHandler
+}
+
+package "LLM Providers" {
+    [OpenAI API] as OpenAI
+    [Anthropic API] as Anthropic
+    [Other LLM APIs] as OtherLLM
+}
+
+' Relationships
+Frontend --> Gateway : "HTTP/HTTPS"
+MicroA --> Gateway : "HTTP/HTTPS"
+MicroB --> Gateway : "HTTP/HTTPS"
+
+Gateway --> Auth : "validates"
+Gateway --> RateLimit : "checks"
+Gateway --> Cache : "stores/retrieves"
+Gateway --> Logging : "records"
+Gateway --> ErrorHandler : "handles"
+
+Gateway --> OpenAI : "forwards requests"
+Gateway --> Anthropic : "forwards requests"
+Gateway --> OtherLLM : "forwards requests"
+
+note right of Gateway
+  Centralizes:
+  - API key management
+  - Error handling
+  - Retry logic
+  - Version compatibility
+  - Monitoring
+end note
+
+note right of Auth
+  Handles:
+  - API key validation
+  - Access control
+  - Authentication
+end note
+
+note right of RateLimit
+  Manages:
+  - Request throttling
+  - Usage quotas
+  - Rate limiting
+end note
+
+@enduml 

@@ -1,0 +1,89 @@
+@startuml
+
+skinparam classAttributeIconSize 0
+
+package "Streaming Response Handling" {
+    class StreamingGateway {
+        -buffer: Buffer
+        -connections: Map<ClientId, Connection>
+        +handleStreamingRequest(request: Request): void
+        +registerClient(client: Client): void
+        +unregisterClient(clientId: ClientId): void
+        +broadcastChunk(chunk: Chunk): void
+    }
+
+    class LLMProxy {
+        -llmClient: LLMClient
+        +streamResponse(request: Request): Stream<Chunk>
+        +handleBackpressure(): void
+    }
+
+    class Buffer {
+        -chunks: Queue<Chunk>
+        -maxSize: int
+        +addChunk(chunk: Chunk): void
+        +getChunk(): Chunk
+        +isFull(): boolean
+    }
+
+    class Connection {
+        -clientId: ClientId
+        -protocol: Protocol
+        -state: ConnectionState
+        +sendChunk(chunk: Chunk): void
+        +handleBackpressure(): void
+    }
+
+    class Client {
+        -id: ClientId
+        -protocol: Protocol
+        +receiveChunk(chunk: Chunk): void
+        +handleDisconnect(): void
+    }
+
+    class Chunk {
+        -id: ChunkId
+        -content: String
+        -sequence: int
+        -sessionId: SessionId
+    }
+
+    enum Protocol {
+        HTTP_SSE
+        WEBSOCKET
+        GRPC
+    }
+
+    enum ConnectionState {
+        CONNECTED
+        DISCONNECTED
+        RECONNECTING
+    }
+}
+
+StreamingGateway --> LLMProxy: uses
+StreamingGateway --> Buffer: manages
+StreamingGateway --> Connection: manages
+Connection --> Client: communicates with
+LLMProxy --> Chunk: generates
+Connection --> Chunk: transmits
+
+note right of StreamingGateway
+  Central hub for managing
+  streaming connections and
+  broadcasting chunks
+end note
+
+note right of LLMProxy
+  Handles communication with
+  LLM API and implements
+  backpressure control
+end note
+
+note right of Buffer
+  Manages chunks for
+  reconnection and
+  backpressure handling
+end note
+
+@enduml 

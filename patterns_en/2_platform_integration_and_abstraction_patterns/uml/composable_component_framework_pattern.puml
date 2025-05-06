@@ -1,0 +1,95 @@
+@startuml composable_component_framework_pattern
+
+' Style settings
+skinparam componentStyle uml2
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+
+' Interface definition
+interface IComponent<Input, Output> {
+    +process(input: Input): Output
+}
+
+' Abstract base component
+abstract class BaseComponent<Input, Output> {
+    #name: String
+    #config: Map<String, Any>
+    +{abstract} process(input: Input): Output
+    +configure(config: Map<String, Any>): void
+}
+
+' Concrete components
+class DocumentLoader {
+    +process(input: String): Document
+}
+
+class TextSplitter {
+    +process(input: Document): List<Chunk>
+}
+
+class Embedder {
+    +process(input: List<Chunk>): List<Vector>
+}
+
+class Retriever {
+    +process(input: List<Vector>): List<Chunk>
+}
+
+class PromptTemplate {
+    +process(input: List<Chunk>): String
+}
+
+class LLMClient {
+    +process(input: String): String
+}
+
+class ResponseParser {
+    +process(input: String): Response
+}
+
+class MemoryManager {
+    +process(input: Response): void
+}
+
+' Pipeline configuration
+class PipelineConfig {
+    -components: List<ComponentConfig>
+    -connections: List<Connection>
+    +loadFromYaml(path: String): void
+}
+
+class ComponentConfig {
+    -name: String
+    -type: String
+    -config: Map<String, Any>
+}
+
+class Connection {
+    -from: String
+    -to: String
+}
+
+' Relationships
+IComponent <|.. BaseComponent
+BaseComponent <|-- DocumentLoader
+BaseComponent <|-- TextSplitter
+BaseComponent <|-- Embedder
+BaseComponent <|-- Retriever
+BaseComponent <|-- PromptTemplate
+BaseComponent <|-- LLMClient
+BaseComponent <|-- ResponseParser
+BaseComponent <|-- MemoryManager
+
+PipelineConfig "1" *-- "many" ComponentConfig
+PipelineConfig "1" *-- "many" Connection
+
+' Pipeline flow (use associations)
+DocumentLoader --> TextSplitter : "Document"
+TextSplitter --> Embedder : "List<Chunk>"
+Embedder --> Retriever : "List<Vector>"
+Retriever --> PromptTemplate : "List<Chunk>"
+PromptTemplate --> LLMClient : "String"
+LLMClient --> ResponseParser : "String"
+ResponseParser --> MemoryManager : "Response"
+
+@enduml 

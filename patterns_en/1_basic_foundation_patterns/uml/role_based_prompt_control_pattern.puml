@@ -1,0 +1,74 @@
+@startuml Role-Based Prompt Control Pattern
+
+' Style settings
+skinparam classAttributeIconSize 0
+skinparam class {
+    BackgroundColor White
+    ArrowColor Black
+    BorderColor Black
+}
+
+' Abstract classes
+abstract class "PromptTemplate" as PT {
+    + {abstract} generatePrompt(context: Context): String
+    + {abstract} validateOutput(output: String): boolean
+}
+
+abstract class "Role" as R {
+    + {abstract} getRoleName(): String
+    + {abstract} getPermissions(): List<Permission>
+}
+
+' Concrete classes
+class "BasePromptTemplate" as BPT {
+    + generatePrompt(context: Context): String
+    + validateOutput(output: String): boolean
+    + addFilter(filter: OutputFilter)
+}
+
+class "RoleSpecificPromptTemplate" as RSPT {
+    - role: Role
+    + generatePrompt(context: Context): String
+    + validateOutput(output: String): boolean
+    + applyRoleSpecificRules()
+}
+
+class "PromptController" as PC {
+    - templates: Map<Role, PromptTemplate>
+    + selectTemplate(role: Role): PromptTemplate
+    + processPrompt(role: Role, context: Context): String
+    + validateResponse(role: Role, response: String): boolean
+}
+
+class "Context" as C {
+    + userInfo: UserInfo
+    + sessionData: SessionData
+    + requestParameters: Map<String, Object>
+}
+
+class "OutputFilter" as OF {
+    + filter(output: String, role: Role): String
+}
+
+' Relationships
+PT <|-- BPT
+PT <|-- RSPT
+RSPT o-- R
+PC o-- PT
+PC o-- C
+BPT o-- OF
+
+note right of PT
+  Base class for all prompt templates
+end note
+
+note right of R
+  Defines user roles and their permissions
+end note
+
+note right of PC
+  Manages prompt template selection
+  and processing based on roles
+end note
+
+@enduml 

@@ -1,0 +1,47 @@
+@startuml
+title Timeout & Fallback Pattern
+
+actor Client
+participant "Application" as App
+participant "LLM API" as LLM
+participant "Fallback\nMechanism" as Fallback
+participant "Timeout\nHandler" as Timeout
+
+Client -> App: Request
+activate App
+
+App -> Timeout: Start timeout monitoring
+activate Timeout
+
+App -> LLM: API Request
+activate LLM
+
+alt Successful Response
+    LLM --> App: Response
+    deactivate LLM
+    Timeout --> App: Cancel timeout
+    deactivate Timeout
+    App --> Client: Return response
+else Timeout Occurs
+    Timeout --> App: Timeout notification
+    deactivate Timeout
+    App -> Fallback: Trigger fallback
+    activate Fallback
+    Fallback --> App: Fallback response
+    deactivate Fallback
+    App --> Client: Return fallback response
+else API Error
+    LLM --> App: Error
+    deactivate LLM
+    Timeout --> App: Cancel timeout
+    deactivate Timeout
+    App -> Fallback: Trigger fallback
+    activate Fallback
+    Fallback --> App: Fallback response
+    deactivate Fallback
+    App --> Client: Return fallback response
+end
+
+deactivate App
+
+@enduml 

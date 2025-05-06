@@ -1,0 +1,61 @@
+@startuml Priority-Based Throttling Sequence
+
+' Style settings
+skinparam sequence {
+  ArrowColor #666666
+  ActorBorderColor #666666
+  LifeLineBorderColor #666666
+  ParticipantBorderColor #666666
+  ParticipantBackgroundColor #FFFFFF
+}
+
+actor Client
+participant "RequestScheduler" as Scheduler
+participant "High Priority\nQueue" as HighQueue
+participant "Medium Priority\nQueue" as MedQueue
+participant "Low Priority\nQueue" as LowQueue
+participant "RequestProcessor" as Processor
+
+== Request Submission ==
+Client -> Scheduler: submitRequest(request)
+activate Scheduler
+
+alt request.priority == HIGH
+    Scheduler -> HighQueue: enqueue(request)
+else request.priority == MEDIUM
+    Scheduler -> MedQueue: enqueue(request)
+else request.priority == LOW
+    Scheduler -> LowQueue: enqueue(request)
+end
+deactivate Scheduler
+
+== Request Processing ==
+loop while hasRequests
+    Scheduler -> Scheduler: processNextRequest()
+    activate Scheduler
+    
+    alt HighQueue not empty
+        Scheduler -> HighQueue: dequeue()
+        HighQueue --> Scheduler: request
+        Scheduler -> Processor: processRequest(request)
+    else MedQueue not empty
+        Scheduler -> MedQueue: dequeue()
+        MedQueue --> Scheduler: request
+        Scheduler -> Processor: processRequest(request)
+    else LowQueue not empty
+        Scheduler -> LowQueue: dequeue()
+        LowQueue --> Scheduler: request
+        Scheduler -> Processor: processRequest(request)
+    end
+    
+    Processor --> Scheduler: processing complete
+    deactivate Scheduler
+end
+
+note right of Scheduler
+  Processing follows priority order
+  but respects configured ratios
+  for each priority level
+end note
+
+@enduml 
