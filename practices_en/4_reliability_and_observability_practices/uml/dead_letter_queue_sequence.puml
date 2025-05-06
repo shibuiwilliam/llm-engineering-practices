@@ -1,0 +1,43 @@
+@startuml Dead Letter Queue Sequence
+
+skinparam backgroundColor white
+skinparam handwritten false
+
+actor Producer
+participant "Message Queue" as Queue
+participant "Message Processor" as Processor
+participant "Dead Letter Queue" as DLQ
+participant "Retry Handler" as Retry
+participant "DLQ Monitor" as Monitor
+
+== Normal Processing ==
+Producer -> Queue: Produce Message
+Queue -> Processor: Consume Message
+Processor -> Processor: Process Message
+Processor --> Queue: Acknowledge Success
+
+== Failed Processing ==
+Producer -> Queue: Produce Message
+Queue -> Processor: Consume Message
+Processor -> Processor: Process Message
+note right: Processing fails
+Processor --> DLQ: Move to DLQ
+Monitor -> DLQ: Check Queue Size
+alt Queue Size > Threshold
+    Monitor -> Monitor: Trigger Alert
+end
+
+== Retry Processing ==
+Retry -> DLQ: Check for Retryable Messages
+DLQ -> Retry: Get Message
+Retry -> Retry: Apply Backoff Strategy
+Retry -> Queue: Reprocess Message
+Queue -> Processor: Consume Message
+Processor -> Processor: Process Message
+alt Processing Succeeds
+    Processor --> Queue: Acknowledge Success
+else Processing Fails Again
+    Processor --> DLQ: Move to DLQ
+end
+
+@enduml 

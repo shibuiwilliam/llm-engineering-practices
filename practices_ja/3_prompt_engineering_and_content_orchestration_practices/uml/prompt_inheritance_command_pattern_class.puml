@@ -1,0 +1,75 @@
+@startuml
+
+' Style settings
+skinparam classAttributeIconSize 0
+skinparam class {
+    BackgroundColor White
+    ArrowColor Black
+    BorderColor Black
+}
+
+' Abstract classes and interfaces
+abstract class BasePrompt {
+    # systemInstructions: String
+    # tone: String
+    # variables: Map<String, String>
+    + {abstract} buildPrompt(): String
+    + addVariable(key: String, value: String): void
+    + getSystemInstructions(): String
+}
+
+interface ICommand {
+    + {abstract} execute(): Response
+    + {abstract} retry(): Response
+    + {abstract} undo(): void
+}
+
+' Concrete prompt classes
+class SummaryPrompt {
+    + buildPrompt(): String
+}
+
+class TranslationPrompt {
+    + buildPrompt(): String
+}
+
+class ClassificationPrompt {
+    + buildPrompt(): String
+}
+
+' Concrete command classes
+class SummaryCommand {
+    - prompt: SummaryPrompt
+    + execute(): Response
+    + retry(): Response
+    + undo(): void
+}
+
+class TranslationCommand {
+    - prompt: TranslationPrompt
+    + execute(): Response
+    + retry(): Response
+    + undo(): void
+}
+
+class ClassificationCommand {
+    - prompt: ClassificationPrompt
+    + execute(): Response
+    + retry(): Response
+    + undo(): void
+}
+
+' Relationships
+BasePrompt <|-- SummaryPrompt
+BasePrompt <|-- TranslationPrompt
+BasePrompt <|-- ClassificationPrompt
+
+ICommand <|.. SummaryCommand
+ICommand <|.. TranslationCommand
+ICommand <|.. ClassificationCommand
+
+SummaryCommand o-- SummaryPrompt
+TranslationCommand o-- TranslationPrompt
+ClassificationCommand o-- ClassificationPrompt
+
+@enduml 

@@ -1,0 +1,69 @@
+@startuml Multi-Region Fail-over Pattern
+
+skinparam componentStyle uml2
+skinparam backgroundColor white
+skinparam handwritten false
+
+title Multi-Region Fail-over Pattern - Component View
+
+package "Global Load Balancer" {
+    [DNS Load Balancer] as DNS
+    [Health Checker] as Health
+    [Traffic Router] as Router
+}
+
+package "Region A" {
+    [LLM API Service A] as LLMA
+    [Local Cache A] as CacheA
+    [Data Replicator A] as ReplicatorA
+}
+
+package "Region B" {
+    [LLM API Service B] as LLMB
+    [Local Cache B] as CacheB
+    [Data Replicator B] as ReplicatorB
+}
+
+package "Region C" {
+    [LLM API Service C] as LLMC
+    [Local Cache C] as CacheC
+}
+
+[Client] --> DNS
+DNS --> Router
+Health --> Router
+Router --> LLMA
+Router --> LLMB
+Router --> LLMC
+
+LLMA --> CacheA
+LLMB --> CacheB
+LLMC --> CacheC
+
+ReplicatorA <--> ReplicatorB
+
+note right of DNS
+  Geo-DNS and Round Robin
+end note
+
+note right of Health
+  Monitors region health
+  and performance
+end note
+
+note right of Router
+  Routes traffic based on
+  health status and
+  geographic location
+end note
+
+note left of ReplicatorA
+  Synchronizes data
+  across regions
+end note
+
+note right of CacheC
+  Data should not be replicated
+end note
+
+@enduml 

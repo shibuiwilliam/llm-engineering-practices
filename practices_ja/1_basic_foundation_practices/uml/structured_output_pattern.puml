@@ -1,0 +1,23 @@
+@startuml
+title Structured Output Pattern
+
+actor User
+participant "Application\n(LLM Client)" as App
+participant "LLM API" as LLM
+participant "Output Parser\n(JSON/YAML/XML)" as Parser
+participant "Downstream Service" as Downstream
+
+User -> App : Submit natural language input
+App -> LLM : Send prompt with structured output instruction
+LLM --> App : Return structured output (e.g., JSON)
+App -> Parser : Parse LLM response
+Parser --> App : Parsed data (object structure)
+App -> Downstream : Send structured data for processing
+
+note right of LLM
+Prompt includes instruction like:
+"Respond using JSON format with fields:
+name, description, score"
+end note
+
+@enduml

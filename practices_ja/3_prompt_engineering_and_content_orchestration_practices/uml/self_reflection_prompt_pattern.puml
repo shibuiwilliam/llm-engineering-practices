@@ -1,0 +1,31 @@
+@startuml Self-Reflection Prompt Pattern
+
+actor Client
+participant "LLM" as llm
+participant "Self-Reflection\nProcess" as reflection
+
+== Initial Output Phase ==
+Client -> llm: Send initial prompt
+activate llm
+llm --> Client: Generate initial response
+deactivate llm
+
+== Reflection Phase ==
+Client -> reflection: Trigger self-reflection
+activate reflection
+
+reflection -> llm: Send reflection prompt
+activate llm
+note right: "Check for:\n- Accuracy\n- Consistency\n- Completeness"
+llm --> reflection: Identify issues and improvements
+deactivate llm
+
+reflection -> llm: Request improved output
+activate llm
+llm --> reflection: Generate improved response
+deactivate llm
+
+reflection --> Client: Return enhanced output
+deactivate reflection
+
+@enduml 

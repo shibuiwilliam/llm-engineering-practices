@@ -1,0 +1,84 @@
+@startuml
+
+package "LLM System" {
+    class LLMClient {
+        +sendPrompt(prompt: String): Response
+    }
+}
+
+package "Observability & Evaluation" {
+    interface Hook {
+        +execute(context: HookContext): void
+    }
+
+    class ObservabilityHook {
+        -logger: Logger
+        -metrics: MetricsCollector
+        -tracer: Tracer
+        +execute(context: HookContext): void
+    }
+
+    class EvaluationHook {
+        -evaluators: List<Evaluator>
+        +execute(context: HookContext): void
+    }
+
+    class HookContext {
+        +requestId: String
+        +prompt: String
+        +response: Response
+        +metadata: Map<String, Object>
+    }
+
+    interface Evaluator {
+        +evaluate(context: HookContext): EvaluationResult
+    }
+
+    class RuleBasedEvaluator {
+        +evaluate(context: HookContext): EvaluationResult
+    }
+
+    class LLMAsJudgeEvaluator {
+        +evaluate(context: HookContext): EvaluationResult
+    }
+
+    class UserFeedbackEvaluator {
+        +evaluate(context: HookContext): EvaluationResult
+    }
+}
+
+package "Plugin System" {
+    class PluginManager {
+        -hooks: List<Hook>
+        +registerHook(hook: Hook): void
+        +executeHooks(context: HookContext): void
+    }
+}
+
+LLMClient --> HookContext : creates
+HookContext --> PluginManager : passed to
+PluginManager --> Hook : manages
+Hook <|.. ObservabilityHook
+Hook <|.. EvaluationHook
+Evaluator <|.. RuleBasedEvaluator
+Evaluator <|.. LLMAsJudgeEvaluator
+Evaluator <|.. UserFeedbackEvaluator
+EvaluationHook --> Evaluator : uses
+
+note right of Hook
+  Base interface for all hooks
+  that can be registered with
+  the PluginManager
+end note
+
+note right of HookContext
+  Contains all relevant information
+  for hooks to process
+end note
+
+note right of PluginManager
+  Manages the lifecycle and
+  execution of hooks
+end note
+
+@enduml 

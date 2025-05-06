@@ -1,0 +1,45 @@
+@startuml Dead Letter Queue Pattern
+
+!define RECTANGLE class
+
+skinparam componentStyle rectangle
+skinparam backgroundColor white
+skinparam handwritten false
+
+package "Message Processing System" {
+    [Message Producer] as producer
+    [Message Queue] as queue
+    [Message Processor] as processor
+    [Dead Letter Queue] as dlq
+    [DLQ Monitor] as monitor
+    [Retry Handler] as retry
+    [Alert System] as alert
+}
+
+database "Message Store" as store
+
+producer --> queue : produces messages
+queue --> processor : consumes messages
+processor --> dlq : failed messages
+dlq --> retry : retry processing
+retry --> queue : reprocess messages
+monitor --> dlq : monitors queue size
+monitor --> alert : triggers alerts
+processor --> store : stores processed messages
+
+note right of dlq
+  Stores messages that failed
+  processing after max retries
+end note
+
+note right of monitor
+  Monitors DLQ size and
+  processing patterns
+end note
+
+note right of retry
+  Handles message reprocessing
+  with backoff strategy
+end note
+
+@enduml 

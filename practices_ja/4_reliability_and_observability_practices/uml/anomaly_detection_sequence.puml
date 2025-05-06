@@ -1,0 +1,46 @@
+@startuml Anomaly Detection Sequence
+
+participant "LLM System" as LLM
+participant "MetricsCollector" as MC
+participant "BaselineLearner" as BL
+participant "AnomalyDetector" as AD
+participant "AlertManager" as AM
+participant "AutomaticResponder" as AR
+
+== Normal Operation ==
+LLM -> MC: Process Request
+activate MC
+MC -> MC: Collect Metrics
+MC -> BL: Update Metrics
+activate BL
+BL -> BL: Update Baseline
+deactivate BL
+deactivate MC
+
+== Anomaly Detection ==
+LLM -> MC: Process Request
+activate MC
+MC -> MC: Collect Metrics
+MC -> AD: Send Metrics
+activate AD
+AD -> BL: Get Baseline
+activate BL
+BL --> AD: Return Baseline
+deactivate BL
+AD -> AD: Detect Anomalies
+alt Anomaly Detected
+    AD -> AM: Send Anomaly Alert
+    activate AM
+    AM -> AR: Trigger Response
+    activate AR
+    AR -> LLM: Switch to Fallback
+    deactivate AR
+    AM -> AM: Notify Operators
+    deactivate AM
+else No Anomaly
+    AD -> AD: Continue Normal Operation
+end
+deactivate AD
+deactivate MC
+
+@enduml 

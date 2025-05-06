@@ -1,0 +1,55 @@
+@startuml
+!theme plain
+skinparam ParticipantPadding 20
+skinparam BoxPadding 10
+
+title User Environment Pattern - Sequence Diagram
+
+actor User
+participant "Client Application" as Client
+participant "Environment\nCollector" as Collector
+participant "Prompt\nGenerator" as Generator
+participant "LLM Service" as LLM
+database "User Profile\nDatabase" as DB
+
+== Environment Information Collection ==
+
+User -> Client: Send Request
+activate Client
+
+Client -> Collector: Request Environment Info
+activate Collector
+
+Collector -> DB: Fetch User Profile
+activate DB
+DB --> Collector: Return User Data
+deactivate DB
+
+Collector -> Collector: Collect Current Time
+Collector -> Collector: Collect Location
+Collector -> Collector: Collect Device Info
+Collector -> Collector: Collect Weather Data
+
+Collector --> Client: Return Environment Context
+deactivate Collector
+
+== Prompt Generation and Response ==
+
+Client -> Generator: Generate Prompt with Context
+activate Generator
+
+Generator -> Generator: Inject Environment Info
+Generator -> Generator: Format Prompt Template
+
+Generator --> Client: Return Enhanced Prompt
+deactivate Generator
+
+Client -> LLM: Send Enhanced Prompt
+activate LLM
+LLM --> Client: Return Contextual Response
+deactivate LLM
+
+Client --> User: Return Personalized Response
+deactivate Client
+
+@enduml 

@@ -1,0 +1,78 @@
+@startuml
+
+' Style configurations
+skinparam classAttributeIconSize 0
+skinparam class {
+    BackgroundColor White
+    ArrowColor Black
+    BorderColor Black
+}
+
+' Main components
+class LLMClient {
+    + requestId: UUID
+    + contextId: UUID
+    + sendRequest(prompt: String): Response
+}
+
+class LoggingService {
+    + logRequest(request: Request)
+    + logResponse(response: Response)
+    + logMetrics(metrics: Metrics)
+}
+
+class MetricsCollector {
+    + latency: Duration
+    + tokenCount: Integer
+    + successRate: Double
+    + collectMetrics(): Metrics
+}
+
+class TracingService {
+    + traceId: UUID
+    + spanId: UUID
+    + startSpan()
+    + endSpan()
+    + addContext(context: Map<String, Object>)
+}
+
+class Request {
+    + id: UUID
+    + prompt: String
+    + model: String
+    + parameters: Map<String, Object>
+    + contextId: UUID
+}
+
+class Response {
+    + id: UUID
+    + content: String
+    + model: String
+    + metrics: Metrics
+    + contextId: UUID
+}
+
+class Metrics {
+    + latency: Duration
+    + tokenCount: Integer
+    + modelVersion: String
+    + timestamp: DateTime
+}
+
+' Relationships
+LLMClient --> Request : creates
+LLMClient --> Response : receives
+LLMClient --> LoggingService : uses
+LLMClient --> MetricsCollector : uses
+LLMClient --> TracingService : uses
+
+LoggingService --> Request : logs
+LoggingService --> Response : logs
+LoggingService --> Metrics : logs
+
+MetricsCollector --> Metrics : collects
+
+TracingService --> Request : traces
+TracingService --> Response : traces
+
+@enduml 
