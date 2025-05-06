@@ -43,7 +43,6 @@ LLMのブレークスルーの一つにReasoning能力の向上によって論�
 ![img](uml/images/event_driven_prompt_orchestration_pattern.png)
 ![img](uml/images/event_driven_prompt_orchestration_sequence.png)
 
-
 ## 適応するシーン
 
 このパターンは以下のような場面で有効です。

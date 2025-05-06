@@ -36,7 +36,6 @@ Streaming Response Handlingパターンは、LLMが出力するストリーミ�
 4. **マルチキャスト機能**
    - 同じストリームを複数のクライアントに同時配信します。
 
-
 ![img](uml/images/streaming_response_handling_pattern.png)
 ![img](uml/images/streaming_response_handling_sequence.png)
 

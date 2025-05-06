@@ -16,7 +16,7 @@ Basic Foundation Patterns は、LLMのAPI を安全かつ確実にアプリケ�
 1. **Structured Output**
    Function-calling や JSON モードを使って、LLM の出力を Pydantic／Protobuf などのスキーマに沿って受け取る設計。
 2. **Structured Logging for LLM Ops**
-   すべての呼び出し・レスポンスを JSON 形式でログ出力し、検索・可視化しやすくするロギング基盤。 
+   すべての呼び出し・レスポンスを JSON 形式でログ出力し、検索・可視化しやすくするロギング基盤。
 3. **Structured Prompt Template**
    YAML／JSON ベースでプロンプト構造を定義し、型安全かつ再利用可能に管理するテンプレート。
 4. **Timeout & Fallback**
@@ -30,7 +30,7 @@ Basic Foundation Patterns は、LLMのAPI を安全かつ確実にアプリケ�
 8. **Prompt Unit Testing**
     期待する入力⇔出力をテストケース化し、CI 上で自動回帰テストを回すユニットテストパターン。
 9. **Dependency Injection for LLM Pipelines**
-   各ステップ（プロンプト組立→推論→後処理）を疎結合にし、モック／テストしやすくする DI 構成。 
+   各ステップ（プロンプト組立→推論→後処理）を疎結合にし、モック／テストしやすくする DI 構成。
 10. **Adapter for Unified API Interface**
    異なるベンダー API 仕様を吸収し、業務ロジックからの呼び出しを統一するアダプタパターン。
 11. **Abstract Factory for Model Clients**
