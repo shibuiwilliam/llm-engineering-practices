@@ -1,0 +1,72 @@
+@startuml Priority-Based Throttling Pattern
+
+' Style settings
+skinparam classAttributeIconSize 0
+skinparam packageStyle rectangle
+skinparam linetype ortho
+
+' Classes
+class Request {
+  +id: String
+  +priority: Priority
+  +content: String
+  +timestamp: DateTime
+  +getPriority(): Priority
+}
+
+enum Priority {
+  HIGH
+  MEDIUM
+  LOW
+}
+
+class PriorityQueue {
+  -queue: Queue<Request>
+  -priority: Priority
+  -maxSize: int
+  +enqueue(request: Request): boolean
+  +dequeue(): Request
+  +isEmpty(): boolean
+  +isFull(): boolean
+  +getSize(): int
+}
+
+class RequestScheduler {
+  -highPriorityQueue: PriorityQueue
+  -mediumPriorityQueue: PriorityQueue
+  -lowPriorityQueue: PriorityQueue
+  -processingRatios: Map<Priority, float>
+  +scheduleRequest(request: Request): boolean
+  +processNextRequest(): Request
+  +updateProcessingRatios(ratios: Map<Priority, float>): void
+  +getQueueStatus(): Map<Priority, int>
+}
+
+class RequestProcessor {
+  -scheduler: RequestScheduler
+  +processRequest(request: Request): void
+  +handleRequest(request: Request): void
+}
+
+' Relationships
+RequestScheduler "1" *-- "3" PriorityQueue : manages
+RequestScheduler "1" -- "1" RequestProcessor : uses
+Request "1" -- "1" Priority : has
+RequestProcessor "1" -- "1" Request : processes
+
+note right of PriorityQueue
+  Manages requests for a specific
+  priority level with size limits
+end note
+
+note right of RequestScheduler
+  Implements priority-based scheduling
+  with configurable processing ratios
+end note
+
+note right of RequestProcessor
+  Handles the actual processing
+  of requests
+end note
+
+@enduml 

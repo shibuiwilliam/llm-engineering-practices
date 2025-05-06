@@ -1,0 +1,110 @@
+@startuml Orchestration Engine Pattern
+
+' Style definitions
+skinparam classAttributeIconSize 0
+skinparam packageStyle rectangle
+skinparam linetype ortho
+
+' Core components
+package "Orchestration Engine" {
+    class OrchestrationEngine {
+        +executeWorkflow(workflowId: String): WorkflowResult
+        +resumeWorkflow(workflowId: String): WorkflowResult
+        +getWorkflowStatus(workflowId: String): WorkflowStatus
+    }
+
+    class WorkflowDefinition {
+        +id: String
+        +version: String
+        +steps: List<StepDefinition>
+        +getStep(stepId: String): StepDefinition
+    }
+
+    class StepDefinition {
+        +id: String
+        +type: StepType
+        +config: Map<String, Object>
+        +dependencies: List<String>
+        +retryPolicy: RetryPolicy
+    }
+
+    enum StepType {
+        LLM_CALL
+        API_CALL
+        DATA_TRANSFORM
+        CONDITIONAL
+        PARALLEL
+    }
+
+    class RetryPolicy {
+        +maxAttempts: int
+        +backoffStrategy: BackoffStrategy
+        +errorConditions: List<ErrorCondition>
+    }
+}
+
+' State Management
+package "State Management" {
+    class WorkflowState {
+        +workflowId: String
+        +currentStep: String
+        +status: WorkflowStatus
+        +context: Map<String, Object>
+        +saveState()
+        +loadState()
+    }
+
+    enum WorkflowStatus {
+        PENDING
+        RUNNING
+        COMPLETED
+        FAILED
+        SUSPENDED
+    }
+}
+
+' Execution Components
+package "Execution" {
+    interface StepExecutor {
+        +execute(step: StepDefinition, context: Map<String, Object>): StepResult
+    }
+
+    class LLMStepExecutor {
+        +execute(step: StepDefinition, context: Map<String, Object>): StepResult
+    }
+
+    class APIStepExecutor {
+        +execute(step: StepDefinition, context: Map<String, Object>): StepResult
+    }
+
+    class TransformStepExecutor {
+        +execute(step: StepDefinition, context: Map<String, Object>): StepResult
+    }
+}
+
+' Relationships
+OrchestrationEngine --> WorkflowDefinition : manages
+OrchestrationEngine --> WorkflowState : tracks
+OrchestrationEngine --> StepExecutor : uses
+WorkflowDefinition --> StepDefinition : contains
+StepDefinition --> RetryPolicy : has
+StepExecutor <|.. LLMStepExecutor : implements
+StepExecutor <|.. APIStepExecutor : implements
+StepExecutor <|.. TransformStepExecutor : implements
+
+note right of OrchestrationEngine
+  Orchestration Engine is the main component
+  that manages workflow execution and state
+end note
+
+note right of WorkflowDefinition
+  Workflow definitions can be stored as
+  YAML/JSON or using a DSL
+end note
+
+note right of StepExecutor
+  Different executors handle various
+  types of steps (LLM, API, etc.)
+end note
+
+@enduml 
