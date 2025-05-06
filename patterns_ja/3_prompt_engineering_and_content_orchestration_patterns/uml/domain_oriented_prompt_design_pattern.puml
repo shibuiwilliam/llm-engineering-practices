@@ -1,0 +1,89 @@
+@startuml Domain-Oriented Prompt Design Pattern
+
+skinparam classAttributeIconSize 0
+skinparam packageStyle rectangle
+
+package "Domain Knowledge" {
+    class DomainSchema {
+        +schemaDefinition: JSON
+        +validateOutput(output: String): boolean
+        +getSchema(): JSON
+    }
+
+    class TerminologyList {
+        +terms: Map<String, String>
+        +addTerm(term: String, definition: String)
+        +getDefinition(term: String): String
+    }
+
+    class OutputExamples {
+        +examples: List<Example>
+        +addExample(example: Example)
+        +getExamples(): List<Example>
+    }
+
+    class ConstraintRules {
+        +rules: List<Rule>
+        +addRule(rule: Rule)
+        +validateConstraints(output: String): boolean
+    }
+}
+
+package "Prompt Engineering" {
+    class PromptEngine {
+        -domainSchema: DomainSchema
+        -terminologyList: TerminologyList
+        -outputExamples: OutputExamples
+        -constraintRules: ConstraintRules
+        +generatePrompt(input: String): String
+        +validateOutput(output: String): boolean
+    }
+
+    class LLMInterface {
+        +generateResponse(prompt: String): String
+        +validateSchema(output: String, schema: JSON): boolean
+    }
+}
+
+class Example {
+    +input: String
+    +output: String
+    +context: String
+}
+
+class Rule {
+    +description: String
+    +validate(output: String): boolean
+}
+
+PromptEngine --> DomainSchema
+PromptEngine --> TerminologyList
+PromptEngine --> OutputExamples
+PromptEngine --> ConstraintRules
+PromptEngine --> LLMInterface
+
+OutputExamples --> Example
+ConstraintRules --> Rule
+
+note right of DomainSchema
+  Defines the structure and
+  validation rules for
+  domain-specific outputs
+end note
+
+note right of TerminologyList
+  Maintains domain-specific
+  terminology and definitions
+end note
+
+note right of OutputExamples
+  Stores few-shot examples
+  for output generation
+end note
+
+note right of ConstraintRules
+  Enforces domain-specific
+  business and compliance rules
+end note
+
+@enduml 

@@ -1,0 +1,58 @@
+@startuml prompt_drift_detection_pattern
+
+skinparam componentStyle uml2
+skinparam backgroundColor white
+skinparam handwritten false
+
+title Prompt Drift Detection Pattern
+
+package "Prompt Drift Detection System" {
+    [Prompt Quality Monitor] as monitor
+    [Baseline Manager] as baseline
+    [Drift Analyzer] as analyzer
+    [Alert Manager] as alert
+    [Metrics Collector] as metrics
+    [Test Case Executor] as executor
+}
+
+database "Baseline Storage" as storage {
+    [Gold Data]
+    [Quality Snapshots]
+}
+
+[LLM Service] as llm
+[User Interface] as ui
+[Notification Service] as notify
+
+monitor --> baseline : "compare with"
+monitor --> analyzer : "analyze drift"
+monitor --> metrics : "collect metrics"
+analyzer --> alert : "trigger alerts"
+baseline --> storage : "store/retrieve"
+executor --> llm : "execute test cases"
+metrics --> storage : "store metrics"
+alert --> notify : "send notifications"
+notify --> ui : "display alerts"
+
+note right of monitor
+  Continuously monitors
+  prompt quality metrics
+end note
+
+note right of analyzer
+  Analyzes quality changes
+  and detects drift
+end note
+
+note right of baseline
+  Manages baseline data
+  and snapshots
+end note
+
+note right of metrics
+  Collects various quality
+  metrics (BLEU, accuracy,
+  user satisfaction)
+end note
+
+@enduml 

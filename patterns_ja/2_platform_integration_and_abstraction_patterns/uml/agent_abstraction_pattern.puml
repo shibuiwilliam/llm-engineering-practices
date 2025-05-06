@@ -1,0 +1,57 @@
+@startuml Agent Abstraction Pattern
+
+!define RECTANGLE class
+
+skinparam componentStyle rectangle
+skinparam backgroundColor white
+skinparam handwritten false
+
+skinparam component {
+    BackgroundColor LightBlue
+    BorderColor DarkBlue
+    ArrowColor DarkBlue
+}
+
+title Agent Abstraction Pattern - Component Diagram
+
+package "AI Agent System" {
+    [AI Agent Core] as AgentCore
+    [Thinking Strategy Plugin] as ThinkingStrategy
+    [Tool Catalog] as ToolCatalog
+    [Trace & Control] as TraceControl
+}
+
+package "External Services" {
+    [HTTP API Service] as HttpService
+    [Database Service] as DbService
+    [ML Service] as MlService
+}
+
+package "Other AI Agents" {
+    [Research Agent] as ResearchAgent
+    [Analysis Agent] as AnalysisAgent
+    [Planning Agent] as PlanningAgent
+}
+
+interface "A2A Protocol" as A2A
+interface "MCP Protocol" as MCP
+
+' Core Agent connections
+AgentCore --> ThinkingStrategy : uses
+AgentCore --> ToolCatalog : uses
+AgentCore --> TraceControl : uses
+
+' External service connections through MCP
+AgentCore ..> MCP : implements
+MCP ..> HttpService : communicates
+MCP ..> DbService : communicates
+MCP ..> MlService : communicates
+
+' AI Agent connections through A2A
+AgentCore ..> A2A : implements
+A2A ..> ResearchAgent : communicates
+A2A ..> AnalysisAgent : communicates
+A2A ..> PlanningAgent : communicates
+
+
+@enduml 

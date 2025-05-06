@@ -1,0 +1,50 @@
+@startuml Event-Driven Prompt Orchestration Pattern
+
+skinparam componentStyle uml2
+skinparam backgroundColor white
+skinparam handwritten false
+
+package "Event-Driven Prompt Orchestration" {
+    [Event Listener] as listener
+    [Orchestrator] as orchestrator
+    [Chain Execution Engine] as engine
+    [Prompt Template Manager] as template
+    [LLM Service] as llm
+    [Action Executor] as action
+}
+
+database "Event Bus" as eventBus
+database "State Store" as stateStore
+database "Metrics Store" as metrics
+
+listener --> eventBus : subscribes to
+listener --> orchestrator : triggers
+orchestrator --> template : selects
+orchestrator --> engine : coordinates
+engine --> llm : invokes
+engine --> action : executes
+engine --> stateStore : persists state
+engine --> metrics : records metrics
+
+note right of listener
+  Handles events from:
+  - Kafka
+  - Pub/Sub
+  - Webhook
+  - Cron
+end note
+
+note right of orchestrator
+  - Selects prompt templates
+  - Injects parameters
+  - Manages flow
+end note
+
+note right of engine
+  - Sequential execution
+  - Parallel execution
+  - Error handling
+  - Retry logic
+end note
+
+@enduml 

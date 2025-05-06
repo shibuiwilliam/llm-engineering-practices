@@ -1,0 +1,70 @@
+ @startuml Idempotent Inference Request Pattern
+
+actor Client
+participant "RequestHandler" as RH
+participant "CacheService" as CS
+participant "LLMService" as LS
+
+== Normal Flow ==
+
+Client -> RH: Send Request\n(prompt, userId, timestamp)
+activate RH
+
+RH -> RH: Generate Request ID\n(hash(prompt + userId + timestamp))
+
+RH -> CS: Check Cache\n(requestId)
+activate CS
+
+alt Cache Hit
+    CS --> RH: Return Cached Response
+    RH --> Client: Return Response
+else Cache Miss
+    CS --> RH: Cache Miss
+    deactivate CS
+    
+    RH -> LS: Call LLM API\n(prompt)
+    activate LS
+    LS --> RH: Return LLM Response
+    deactivate LS
+    
+    RH -> CS: Store in Cache\n(requestId, response)
+    activate CS
+    CS --> RH: Cache Stored
+    deactivate CS
+    
+    RH --> Client: Return Response
+end
+
+deactivate RH
+
+== Error Recovery Flow ==
+
+Client -> RH: Retry Request\n(same requestId)
+activate RH
+
+RH -> CS: Check Cache\n(requestId)
+activate CS
+
+alt Cache Hit
+    CS --> RH: Return Cached Response
+    RH --> Client: Return Response
+else Cache Miss
+    CS --> RH: Cache Miss
+    deactivate CS
+    
+    RH -> LS: Call LLM API\n(prompt)
+    activate LS
+    LS --> RH: Return LLM Response
+    deactivate LS
+    
+    RH -> CS: Store in Cache\n(requestId, response)
+    activate CS
+    CS --> RH: Cache Stored
+    deactivate CS
+    
+    RH --> Client: Return Response
+end
+
+deactivate RH
+
+@enduml
