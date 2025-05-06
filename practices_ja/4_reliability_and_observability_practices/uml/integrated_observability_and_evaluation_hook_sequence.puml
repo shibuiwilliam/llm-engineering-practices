@@ -1,0 +1,74 @@
+@startuml
+
+actor Client
+participant "LLMClient" as LLM
+participant "PluginManager" as PM
+participant "ObservabilityHook" as OH
+participant "EvaluationHook" as EH
+participant "RuleBasedEvaluator" as RBE
+participant "LLMAsJudgeEvaluator" as LJE
+participant "External LLM" as ELLM
+
+Client -> LLM: sendPrompt(prompt)
+activate LLM
+
+LLM -> LLM: create HookContext
+LLM -> PM: executeHooks(context)
+activate PM
+
+PM -> OH: execute(context)
+activate OH
+OH -> OH: log request
+OH -> OH: record metrics
+OH -> OH: start trace
+deactivate OH
+
+LLM -> ELLM: send prompt
+activate ELLM
+ELLM --> LLM: response
+deactivate ELLM
+
+PM -> OH: execute(context)
+activate OH
+OH -> OH: log response
+OH -> OH: update metrics
+OH -> OH: end trace
+deactivate OH
+
+PM -> EH: execute(context)
+activate EH
+
+EH -> RBE: evaluate(context)
+activate RBE
+RBE --> EH: evaluation result
+deactivate RBE
+
+EH -> LJE: evaluate(context)
+activate LJE
+LJE --> EH: evaluation result
+deactivate LJE
+
+EH --> PM: evaluation results
+deactivate EH
+
+PM --> LLM: hook execution complete
+deactivate PM
+
+LLM --> Client: response with evaluation
+deactivate LLM
+
+note right of OH
+  ObservabilityHook handles:
+  - Logging
+  - Metrics
+  - Tracing
+end note
+
+note right of EH
+  EvaluationHook coordinates:
+  - Rule-based evaluation
+  - LLM-as-judge evaluation
+  - User feedback collection
+end note
+
+@enduml 

@@ -1,0 +1,40 @@
+@startuml
+title Prompt Splitting Sharding Aggregation Pattern - Sequence Diagram
+
+actor Client
+participant "TextProcessor" as TP
+participant "Splitter" as SPL
+participant "ShardManager" as SM
+participant "LLMWorker" as LLM
+participant "Aggregator" as AGG
+
+Client -> TP: Process Large Text
+activate TP
+
+TP -> SPL: Split Text
+activate SPL
+SPL --> TP: Return Text Chunks
+deactivate SPL
+
+TP -> SM: Distribute Chunks
+activate SM
+
+loop For each chunk
+    SM -> LLM: Process Chunk
+    activate LLM
+    LLM --> SM: Return Processed Result
+    deactivate LLM
+end
+
+SM --> TP: Return All Results
+deactivate SM
+
+TP -> AGG: Aggregate Results
+activate AGG
+AGG --> TP: Return Final Result
+deactivate AGG
+
+TP --> Client: Return Processed Text
+deactivate TP
+
+@enduml 

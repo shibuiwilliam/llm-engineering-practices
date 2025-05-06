@@ -1,0 +1,61 @@
+@startuml forget_past_pattern_sequence
+
+skinparam sequence {
+    ArrowColor #2C3E50
+    ActorBorderColor #2C3E50
+    LifeLineBorderColor #2C3E50
+    ParticipantBorderColor #2C3E50
+    ParticipantBackgroundColor #ECF0F1
+}
+
+actor User
+participant "LLM System" as LLM
+participant "History Manager" as HM
+participant "Checkpoint Manager" as CM
+participant "Quality Assessor" as QA
+
+== Normal Operation ==
+
+User -> LLM: Send request
+activate LLM
+LLM -> HM: Store conversation
+activate HM
+HM -> CM: Create checkpoint
+activate CM
+CM --> HM: Checkpoint created
+deactivate CM
+HM --> LLM: History stored
+deactivate HM
+LLM --> User: Generate response
+deactivate LLM
+
+== Quality Issue Detection ==
+
+User -> LLM: Send request
+activate LLM
+LLM -> QA: Assess quality
+activate QA
+QA --> LLM: Quality below threshold
+deactivate QA
+
+== Rollback Process ==
+
+LLM -> CM: Request rollback
+activate CM
+CM -> HM: Get checkpoint
+activate HM
+HM --> CM: Return checkpoint
+deactivate HM
+CM --> LLM: Restore state
+deactivate CM
+
+== Recovery ==
+
+LLM -> HM: Clear invalid history
+activate HM
+HM --> LLM: History cleared
+deactivate HM
+LLM --> User: Generate new response
+deactivate LLM
+
+@enduml 

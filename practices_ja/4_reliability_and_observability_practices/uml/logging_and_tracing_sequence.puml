@@ -1,0 +1,61 @@
+@startuml
+
+' Style configurations
+skinparam sequence {
+    ArrowColor Black
+    LifeLineBorderColor Black
+    ParticipantBorderColor Black
+    ParticipantBackgroundColor White
+}
+
+' Participants
+participant "Client" as client
+participant "LLMClient" as llm
+participant "TracingService" as tracing
+participant "LoggingService" as logging
+participant "MetricsCollector" as metrics
+participant "LLM API" as api
+
+' Sequence
+client -> llm: sendRequest(prompt)
+activate llm
+
+llm -> tracing: startSpan()
+activate tracing
+tracing --> llm: spanId
+deactivate tracing
+
+llm -> llm: generateRequestId()
+llm -> llm: generateContextId()
+
+llm -> logging: logRequest(request)
+activate logging
+logging --> llm: request logged
+deactivate logging
+
+llm -> metrics: startMetricsCollection()
+activate metrics
+
+llm -> api: sendRequest(request)
+activate api
+api --> llm: response
+deactivate api
+
+metrics -> metrics: collectMetrics()
+metrics --> llm: metrics
+deactivate metrics
+
+llm -> logging: logResponse(response)
+activate logging
+logging --> llm: response logged
+deactivate logging
+
+llm -> tracing: endSpan()
+activate tracing
+tracing --> llm: span completed
+deactivate tracing
+
+llm --> client: response
+deactivate llm
+
+@enduml 

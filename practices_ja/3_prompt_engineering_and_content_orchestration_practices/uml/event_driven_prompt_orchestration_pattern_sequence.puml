@@ -1,0 +1,59 @@
+@startuml Event-Driven Prompt Orchestration Sequence
+
+skinparam backgroundColor white
+skinparam handwritten false
+
+actor "External System" as external
+participant "Event Listener" as listener
+participant "Orchestrator" as orchestrator
+participant "Prompt Template\nManager" as template
+participant "Chain Execution\nEngine" as engine
+participant "LLM Service" as llm
+participant "Action Executor" as action
+database "State Store" as state
+database "Metrics Store" as metrics
+
+== Event Processing ==
+
+external -> listener : Event occurs
+activate listener
+
+listener -> orchestrator : Trigger processing
+activate orchestrator
+
+orchestrator -> template : Request template
+activate template
+template --> orchestrator : Return template
+deactivate template
+
+orchestrator -> engine : Execute chain
+activate engine
+
+engine -> state : Load state
+activate state
+state --> engine : Return state
+deactivate state
+
+engine -> llm : Generate response
+activate llm
+llm --> engine : Return response
+deactivate llm
+
+engine -> action : Execute actions
+activate action
+action --> engine : Action completed
+deactivate action
+
+engine -> state : Update state
+engine -> metrics : Record metrics
+
+engine --> orchestrator : Chain completed
+deactivate engine
+
+orchestrator --> listener : Processing complete
+deactivate orchestrator
+
+listener --> external : Response ready
+deactivate listener
+
+@enduml 

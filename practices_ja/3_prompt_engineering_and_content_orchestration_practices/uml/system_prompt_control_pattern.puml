@@ -1,0 +1,76 @@
+@startuml
+
+' Style settings
+skinparam classAttributeIconSize 0
+skinparam class {
+    BackgroundColor White
+    ArrowColor Black
+    BorderColor Black
+}
+
+' Main components
+class PromptPolicyEngine {
+    - promptLayers: List<PromptLayer>
+    + composeSystemPrompt(): String
+    + addLayer(layer: PromptLayer): void
+    + removeLayer(layer: PromptLayer): void
+}
+
+abstract class PromptLayer {
+    # template: String
+    # priority: int
+    + getTemplate(): String
+    + getPriority(): int
+    + {abstract} evaluate(): boolean
+}
+
+class GlobalPromptLayer {
+    - globalRules: Map<String, String>
+    + evaluate(): boolean
+    + addRule(key: String, value: String): void
+}
+
+class UserSessionPromptLayer {
+    - userContext: UserContext
+    - sessionState: SessionState
+    + evaluate(): boolean
+    + updateContext(context: UserContext): void
+}
+
+class TaskPromptLayer {
+    - taskType: TaskType
+    - taskParameters: Map<String, String>
+    + evaluate(): boolean
+    + setTaskType(type: TaskType): void
+}
+
+' Relationships
+PromptPolicyEngine o-- PromptLayer : manages
+PromptLayer <|-- GlobalPromptLayer
+PromptLayer <|-- UserSessionPromptLayer
+PromptLayer <|-- TaskPromptLayer
+
+' Supporting classes
+class UserContext {
+    + userId: String
+    + userRole: String
+    + permissions: List<String>
+}
+
+class SessionState {
+    + sessionId: String
+    + startTime: DateTime
+    + context: Map<String, String>
+}
+
+class TaskType {
+    + name: String
+    + description: String
+    + constraints: List<String>
+}
+
+UserSessionPromptLayer --> UserContext : uses
+UserSessionPromptLayer --> SessionState : uses
+TaskPromptLayer --> TaskType : uses
+
+@enduml 

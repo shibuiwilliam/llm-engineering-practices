@@ -1,0 +1,61 @@
+@startuml prompt_performance_profiling_pattern
+
+skinparam componentStyle uml2
+skinparam backgroundColor white
+skinparam handwritten false
+
+title Prompt Performance Profiling Pattern
+
+package "LLM Application" {
+    [LLM Client] as client
+    [Prompt Profiler] as profiler
+    [Metrics Collector] as collector
+}
+
+package "Monitoring Infrastructure" {
+    [Metrics Storage] as storage
+    [Visualization Dashboard] as dashboard
+    [Alert Manager] as alert
+}
+
+package "CI/CD Pipeline" {
+    [Benchmark Runner] as benchmark
+    [Performance Report Generator] as report
+}
+
+' Main flow
+client --> profiler : Wraps LLM calls
+profiler --> collector : Sends metrics
+collector --> storage : Stores metrics
+storage --> dashboard : Provides data
+storage --> alert : Triggers alerts
+
+' CI/CD integration
+benchmark --> profiler : Runs tests
+benchmark --> report : Generates reports
+report --> dashboard : Updates metrics
+
+note right of profiler
+  Collects:
+  - Input/Output tokens
+  - Latency
+  - Error rates
+  - Quality scores
+end note
+
+note right of collector
+  Implements:
+  - Async processing
+  - Batch operations
+  - Data transformation
+end note
+
+note right of dashboard
+  Shows:
+  - Performance trends
+  - Cost analysis
+  - Quality metrics
+  - SLO status
+end note
+
+@enduml 

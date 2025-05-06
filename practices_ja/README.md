@@ -1,0 +1,15 @@
+# LLMを本番システムで活用するプラクティス集
+
+このドキュメントは、LLMを本番システムで活用するためのプラクティス集です。LLMをプログラムやアプリケーションの中で活用するときに発生する課題や障壁を解決するための方法や考え方をまとめています。LLMを活用する際の参考にしてください。
+
+なお、本ドキュメントではLLMをOpenAI APIやGoogle Gemini API等のAPIを通じて利用することを前提としています。LLMを活用した多くのアプリケーションがLLMプロバイダーの提供するAPIを通してLLMを活用しているという認識でこのドキュメントをまとめています。LLMをローカルで動かす場合は、別途考慮が必要です。
+
+## 目次
+
+[1_basic_foundation_practices](1_basic_foundation_practices): LLMのAPIを安全かつ確実にアプリケーションに組み込むための“土台”となる共通基盤プラクティス群です。
+
+[2_platform_integration_and_abstraction_practices](2_platform_integration_and_abstraction_practices): LLM APIを用いて複雑なロジックやアプリケーションを実現するためのプラクティス群です。
+
+[3_prompt_engineering_and_content_orchestration_practices](3_prompt_engineering_and_content_orchestration_practices): プロンプトを単なるテキストではなく設計資産として捉え、複雑な生成フローや動的要件に対応するためのプラクティス群です。
+
+[4_reliability_and_observability_practices](4_reliability_and_observability_practices): LLMを用いたシステム 24/7 で安定運用し、問題を迅速に検知・解析・復旧するためのプラクティス群です。

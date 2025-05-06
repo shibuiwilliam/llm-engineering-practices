@@ -1,0 +1,40 @@
+@startuml
+title Parallel World Pattern - Sequence Diagram
+
+actor User
+participant "PromptManager" as PM
+participant "BranchManager" as BM
+participant "LLMService" as LLM
+participant "Evaluator" as EVAL
+participant "ResultAggregator" as RA
+
+User -> PM: Submit Prompt
+activate PM
+
+PM -> BM: Create Parallel Branches
+activate BM
+
+loop For each branch
+    BM -> LLM: Execute with Branch Config
+    activate LLM
+    LLM --> BM: Return Branch Result
+    deactivate LLM
+end
+
+BM --> PM: Return All Branch Results
+deactivate BM
+
+PM -> EVAL: Evaluate Results
+activate EVAL
+EVAL --> PM: Return Evaluation Scores
+deactivate EVAL
+
+PM -> RA: Aggregate Best Results
+activate RA
+RA --> PM: Return Final Output
+deactivate RA
+
+PM --> User: Present Results
+deactivate PM
+
+@enduml 

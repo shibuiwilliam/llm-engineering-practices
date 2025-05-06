@@ -1,0 +1,80 @@
+@startuml
+
+' Abstract classes and interfaces
+abstract class PromptStrategy {
+    +execute(context: PromptContext): String
+}
+
+interface PromptBuilder {
+    +withContext(context: String): PromptBuilder
+    +withExamples(examples: List<String>): PromptBuilder
+    +withInstructions(instructions: String): PromptBuilder
+    +build(): Prompt
+}
+
+interface PromptPrototype {
+    +clone(): PromptPrototype
+    +setLanguage(language: String): PromptPrototype
+    +setParameters(params: Map<String, Object>): PromptPrototype
+}
+
+interface PromptInterpreter {
+    +parse(template: String): Prompt
+    +interpret(context: Map<String, Object>): String
+}
+
+' Concrete implementations
+class ChainOfThoughtStrategy {
+    +execute(context: PromptContext): String
+}
+
+class FewShotStrategy {
+    +execute(context: PromptContext): String
+}
+
+class ZeroShotStrategy {
+    +execute(context: PromptContext): String
+}
+
+class StandardPromptBuilder {
+    -prompt: Prompt
+    +withContext(context: String): PromptBuilder
+    +withExamples(examples: List<String>): PromptBuilder
+    +withInstructions(instructions: String): PromptBuilder
+    +build(): Prompt
+}
+
+class PromptFactory {
+    +{static} createSummarizationPrompt(): Prompt
+    +{static} createTranslationPrompt(): Prompt
+    +{static} createClassificationPrompt(): Prompt
+}
+
+class Prompt {
+    -content: String
+    -parameters: Map<String, Object>
+    +getContent(): String
+    +setParameter(key: String, value: Object): void
+}
+
+class PromptContext {
+    -input: String
+    -parameters: Map<String, Object>
+    +getInput(): String
+    +getParameter(key: String): Object
+}
+
+' Relationships
+PromptStrategy <|-- ChainOfThoughtStrategy
+PromptStrategy <|-- FewShotStrategy
+PromptStrategy <|-- ZeroShotStrategy
+
+PromptBuilder <|.. StandardPromptBuilder
+PromptPrototype <|.. Prompt
+PromptInterpreter <|.. Prompt
+
+PromptFactory --> Prompt : creates
+StandardPromptBuilder --> Prompt : builds
+PromptStrategy --> PromptContext : uses
+
+@enduml 

@@ -1,0 +1,36 @@
+@startuml few_shot_learning_pattern
+
+skinparam sequence {
+    ArrowColor #666666
+    ActorBorderColor #666666
+    LifeLineBorderColor #666666
+    ParticipantBorderColor #666666
+    ParticipantBackgroundColor #FFFFFF
+}
+
+actor User
+participant "Few-shot\nLearning Pattern" as FSL
+participant "LLM" as LLM
+
+== Initialization ==
+User -> FSL: Input Task
+activate FSL
+
+== Example Provision ==
+FSL -> FSL: Add Example 1\n(Input → Output)
+FSL -> FSL: Add Example 2\n(Input → Output)
+FSL -> FSL: Add Example N\n(Input → Output)
+
+== Processing ==
+FSL -> LLM: Send Prompt with Examples
+activate LLM
+LLM -> LLM: Process Examples
+LLM -> LLM: Apply Pattern to New Input
+
+== Response ==
+LLM --> FSL: Structured Response
+deactivate LLM
+FSL --> User: Formatted Output
+deactivate FSL
+
+@enduml 
