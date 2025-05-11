@@ -1,0 +1,43 @@
+@startuml prompt_rewrite_pattern_sequence
+
+title Prompt Rewrite Pattern - Sequence Diagram
+
+actor User
+participant "System" as System
+participant "Prompt Rewrite Engine" as RewriteEngine
+participant "LLM" as LLM
+
+== Initial Request ==
+
+User -> System: Submit raw prompt
+activate System
+
+System -> RewriteEngine: Forward raw prompt
+activate RewriteEngine
+
+RewriteEngine -> LLM: Request prompt optimization
+activate LLM
+LLM --> RewriteEngine: Return optimized prompt
+deactivate LLM
+
+RewriteEngine --> System: Return optimized prompt
+deactivate RewriteEngine
+
+== Optional: User Confirmation ==
+
+System -> User: Show optimized prompt
+User -> System: Confirm/Reject optimization
+activate User
+deactivate User
+
+== Final Processing ==
+
+System -> LLM: Send optimized prompt
+activate LLM
+LLM --> System: Return final response
+deactivate LLM
+
+System --> User: Return final response
+deactivate System
+
+@enduml 

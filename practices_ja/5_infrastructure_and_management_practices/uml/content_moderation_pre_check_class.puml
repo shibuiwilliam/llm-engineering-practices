@@ -1,0 +1,60 @@
+@startuml Content Moderation Pre-check Pattern
+
+skinparam classAttributeIconSize 0
+
+class ContentModerationSystem {
+  +processInput(input: String): String
+  -logViolation(violation: Violation)
+  -notifyAdmin(violation: Violation)
+}
+
+class ContentModerator {
+  +checkContent(content: String): ModerationResult
+  +isViolation(result: ModerationResult): boolean
+}
+
+class SensitiveDataHandler {
+  +maskSensitiveData(input: String): MaskedData
+  +restoreSensitiveData(output: String, maskedData: MaskedData): String
+  -generateToken(): String
+}
+
+class ExternalModerationAPI {
+  +moderate(content: String): ModerationResult
+}
+
+class TokenMapping {
+  -mapping: Map<String, String>
+  +storeMapping(original: String, token: String)
+  +getOriginal(token: String): String
+  +clear()
+}
+
+class LLMService {
+  +generateResponse(prompt: String): String
+}
+
+ContentModerationSystem --> ContentModerator
+ContentModerationSystem --> SensitiveDataHandler
+ContentModerationSystem --> LLMService
+ContentModerator --> ExternalModerationAPI
+SensitiveDataHandler --> TokenMapping
+
+note right of ContentModerationSystem
+  Main orchestrator that
+  coordinates the entire
+  moderation process
+end note
+
+note right of ContentModerator
+  Handles content
+  moderation using
+  external APIs
+end note
+
+note right of SensitiveDataHandler
+  Manages sensitive data
+  masking and restoration
+end note
+
+@enduml 

@@ -1,0 +1,54 @@
+@startuml Zero-Trust API Access Sequence Diagram
+
+skinparam backgroundColor white
+skinparam handwritten false
+
+actor Client
+participant "API Gateway" as Gateway
+participant "Access Controller" as Controller
+participant "Token Manager" as TokenManager
+participant "Secret Storage" as Storage
+participant "LLM API Provider" as LLM
+participant "Audit Logger" as Logger
+
+Client -> Gateway: API Request
+activate Gateway
+
+Gateway -> Controller: Validate Access
+activate Controller
+Controller --> Gateway: Access Granted
+deactivate Controller
+
+Gateway -> TokenManager: Get Available Token
+activate TokenManager
+TokenManager -> Storage: Retrieve Token
+activate Storage
+Storage --> TokenManager: Return Token
+deactivate Storage
+TokenManager --> Gateway: Return Token
+deactivate TokenManager
+
+Gateway -> LLM: Forward Request with Token
+activate LLM
+alt Success
+    LLM --> Gateway: Response
+else Token Invalid
+    LLM --> Gateway: Token Error
+    Gateway -> TokenManager: Mark Token Invalid
+    TokenManager -> Storage: Update Token Status
+    Gateway -> TokenManager: Get Next Token
+    TokenManager --> Gateway: New Token
+    Gateway -> LLM: Retry with New Token
+    LLM --> Gateway: Response
+end
+deactivate LLM
+
+Gateway -> Logger: Log Access
+activate Logger
+Logger --> Gateway: Log Confirmed
+deactivate Logger
+
+Gateway --> Client: Return Response
+deactivate Gateway
+
+@enduml 

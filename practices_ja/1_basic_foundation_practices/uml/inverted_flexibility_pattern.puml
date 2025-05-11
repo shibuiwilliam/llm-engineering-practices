@@ -1,0 +1,57 @@
+@startuml Inverted Flexible Pattern
+
+skinparam componentStyle uml2
+skinparam backgroundColor white
+skinparam handwritten false
+
+title Inverted Flexible Pattern - Component Diagram
+
+package "Application Layer" {
+    [Constrained UI] as UI
+    [Business Logic] as BL
+    [Domain-Specific Components] as DSC
+}
+
+package "LLM Integration Layer" {
+    [LLM Service] as LLM
+    [Prompt Templates] as PT
+    [Response Parser] as RP
+}
+
+package "Data Layer" {
+    [Structured Data] as SD
+    [Domain Knowledge] as DK
+}
+
+' Relationships
+UI --> BL : "Structured Input"
+BL --> DSC : "Domain Operations"
+DSC --> LLM : "Structured Requests"
+LLM --> PT : "Uses"
+PT --> LLM : "Guides"
+LLM --> RP : "Raw Response"
+RP --> BL : "Structured Output"
+BL --> UI : "Formatted Response"
+DSC --> DK : "References"
+DK --> DSC : "Provides Context"
+BL --> SD : "Reads/Writes"
+
+note right of UI
+  Provides constrained,
+  domain-specific interface
+  to users
+end note
+
+note right of LLM
+  Flexible LLM capabilities
+  are hidden behind
+  structured interfaces
+end note
+
+note right of DSC
+  Implements domain-specific
+  business rules and
+  constraints
+end note
+
+@enduml 

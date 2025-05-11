@@ -1,0 +1,49 @@
+@startuml Zero-Trust API Access Component Diagram
+
+!define RECTANGLE class
+
+skinparam componentStyle rectangle
+skinparam backgroundColor white
+skinparam handwritten false
+
+package "Zero-Trust API Access System" {
+    [API Gateway] as gateway
+    [Token Manager] as tokenManager
+    [Access Controller] as accessController
+    [Audit Logger] as auditLogger
+    [Secret Storage] as secretStorage
+    [Metrics Collector] as metricsCollector
+}
+
+package "External Systems" {
+    [LLM API Provider] as llmApi
+    [Client Applications] as client
+}
+
+client --> gateway : "API Requests"
+gateway --> accessController : "Validate Access"
+accessController --> tokenManager : "Get Token"
+tokenManager --> secretStorage : "Retrieve/Update Tokens"
+gateway --> llmApi : "Forward Request"
+gateway --> auditLogger : "Log Access"
+gateway --> metricsCollector : "Collect Metrics"
+
+note right of gateway
+  Handles request routing,
+  token selection, and
+  failover logic
+end note
+
+note right of tokenManager
+  Manages token rotation,
+  usage tracking, and
+  availability
+end note
+
+note right of accessController
+  Implements access policies,
+  request filtering, and
+  rate limiting
+end note
+
+@enduml 

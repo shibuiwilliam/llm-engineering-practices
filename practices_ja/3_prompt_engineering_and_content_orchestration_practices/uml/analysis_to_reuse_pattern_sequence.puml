@@ -1,0 +1,71 @@
+@startuml Analysis to Reuse Pattern
+!theme plain
+skinparam ParticipantPadding 20
+skinparam BoxPadding 10
+
+participant "Client" as client
+participant "PromptManager" as pm
+participant "PromptEvaluator" as pe
+participant "PromptRepository" as pr
+participant "LLM" as llm
+
+== Prompt Recording and Evaluation ==
+
+client -> pm: Request task execution
+activate pm
+
+pm -> llm: Send prompt
+activate llm
+llm --> pm: Return response
+deactivate llm
+
+pm -> pe: Evaluate prompt and response
+activate pe
+pe --> pm: Evaluation result
+deactivate pe
+
+pm -> pr: Store prompt, response, and evaluation
+activate pr
+pr --> pm: Confirmation
+deactivate pr
+
+pm --> client: Return response with evaluation
+deactivate pm
+
+== Prompt Reuse ==
+
+client -> pm: Request similar task
+activate pm
+
+pm -> pr: Query successful prompts
+activate pr
+pr --> pm: Return matching prompts
+deactivate pr
+
+pm -> llm: Send optimized prompt
+activate llm
+llm --> pm: Return response
+deactivate llm
+
+pm --> client: Return response
+deactivate pm
+
+== Failure Analysis ==
+
+client -> pm: Report failure
+activate pm
+
+pm -> pe: Analyze failure
+activate pe
+pe --> pm: Failure analysis
+deactivate pe
+
+pm -> pr: Store failure analysis
+activate pr
+pr --> pm: Confirmation
+deactivate pr
+
+pm --> client: Return improvement suggestions
+deactivate pm
+
+@enduml 
