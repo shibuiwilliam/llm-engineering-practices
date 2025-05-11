@@ -1,0 +1,48 @@
+@startuml Policy-Based LLM Access Control Pattern - Sequence Diagram
+
+actor User
+participant "Client Application" as Client
+participant "LLM Service" as Service
+participant "Policy Engine" as Engine
+participant "Policy Definition" as Policy
+participant "Audit Logger" as Logger
+participant "LLM Provider" as LLM
+
+User -> Client: Submit Request
+activate Client
+
+Client -> Service: Process Request
+activate Service
+
+Service -> Engine: Evaluate Policy
+activate Engine
+
+Engine -> Policy: Load Policies
+activate Policy
+Policy --> Engine: Return Policies
+deactivate Policy
+
+Engine -> Engine: Evaluate Rules
+Engine -> Logger: Log Decision
+activate Logger
+Logger --> Engine: Confirmation
+deactivate Logger
+
+alt Policy Decision: Allowed
+    Engine --> Service: Allow Request
+    Service -> LLM: Forward Request
+    activate LLM
+    LLM --> Service: Generate Response
+    deactivate LLM
+    Service --> Client: Return Response
+else Policy Decision: Denied
+    Engine --> Service: Deny Request
+    Service --> Client: Return Error
+end
+
+deactivate Engine
+deactivate Service
+Client --> User: Show Result
+deactivate Client
+
+@enduml 

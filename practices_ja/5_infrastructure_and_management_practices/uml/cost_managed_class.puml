@@ -1,0 +1,69 @@
+@startuml cost_managed_class
+
+skinparam classAttributeIconSize 0
+
+class CostEstimator {
+  + estimateInputTokens(prompt: String): int
+  + estimateOutputTokens(task: Task): int
+  + calculateCost(inputTokens: int, outputTokens: int, model: LLMModel): float
+}
+
+class ModelRouter {
+  + classifyRequest(request: Request): TaskComplexity
+  + selectModel(complexity: TaskComplexity): LLMModel
+  + routeRequest(request: Request): Response
+}
+
+class LLMModel {
+  + name: String
+  + costPerInputToken: float
+  + costPerOutputToken: float
+  + maxTokens: int
+  + performanceLevel: PerformanceLevel
+}
+
+enum TaskComplexity {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum PerformanceLevel {
+  BASIC
+  STANDARD
+  ADVANCED
+}
+
+class Request {
+  + prompt: String
+  + maxTokens: int
+  + requiredQuality: QualityLevel
+}
+
+class Response {
+  + content: String
+  + usedTokens: int
+  + cost: float
+}
+
+class CostManager {
+  + checkBudgetLimit(user: User, cost: float): boolean
+  + trackUsage(user: User, cost: float): void
+  + getUsageReport(user: User): UsageReport
+}
+
+class User {
+  + id: String
+  + budgetLimit: float
+  + usageQuota: int
+}
+
+CostEstimator --> LLMModel : uses
+ModelRouter --> LLMModel : routes to
+ModelRouter --> CostEstimator : uses
+Request --> ModelRouter : processed by
+ModelRouter --> Response : generates
+CostManager --> User : manages
+CostManager --> Response : tracks
+
+@enduml 

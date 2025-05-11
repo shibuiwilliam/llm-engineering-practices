@@ -1,0 +1,72 @@
+@startuml Zero-Trust API Access Class Diagram
+
+skinparam backgroundColor white
+skinparam handwritten false
+
+class APIGateway {
+    +handleRequest(request: Request): Response
+    +selectToken(): Token
+    +forwardRequest(request: Request, token: Token): Response
+    +handleFailover(): void
+}
+
+class AccessController {
+    -policies: List<Policy>
+    +validateAccess(request: Request): boolean
+    +applyRateLimit(request: Request): boolean
+    +filterContent(request: Request): boolean
+}
+
+class TokenManager {
+    -tokens: List<Token>
+    +getAvailableToken(): Token
+    +markTokenInvalid(token: Token): void
+    +rotateTokens(): void
+    +updateTokenUsage(token: Token): void
+}
+
+class SecretStorage {
+    +storeToken(token: Token): void
+    +retrieveToken(id: String): Token
+    +updateTokenStatus(token: Token): void
+    +getAllTokens(): List<Token>
+}
+
+class AuditLogger {
+    +logAccess(request: Request, token: Token): void
+    +logError(error: Error): void
+    +generateReport(): Report
+}
+
+class MetricsCollector {
+    +collectTokenMetrics(): Metrics
+    +collectAccessMetrics(): Metrics
+    +collectErrorMetrics(): Metrics
+}
+
+class Token {
+    -id: String
+    -value: String
+    -status: TokenStatus
+    -usageCount: int
+    -lastUsed: DateTime
+    +isValid(): boolean
+    +incrementUsage(): void
+}
+
+class Policy {
+    -rules: List<Rule>
+    +evaluate(request: Request): boolean
+    +addRule(rule: Rule): void
+}
+
+APIGateway --> AccessController: uses
+APIGateway --> TokenManager: uses
+APIGateway --> AuditLogger: uses
+APIGateway --> MetricsCollector: uses
+
+TokenManager --> SecretStorage: uses
+TokenManager --> Token: manages
+AccessController --> Policy: uses
+
+@enduml 

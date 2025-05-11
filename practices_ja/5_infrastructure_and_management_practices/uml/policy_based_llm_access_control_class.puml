@@ -1,0 +1,55 @@
+@startuml Policy-Based LLM Access Control Pattern - Class Diagram
+
+skinparam classAttributeIconSize 0
+
+class LLMService {
+  + processRequest(request: Request): Response
+}
+
+class PolicyEngine {
+  - policies: List<Policy>
+  + evaluatePolicy(request: Request, context: Context): PolicyDecision
+  + loadPolicies(policyDefinition: PolicyDefinition): void
+}
+
+class Policy {
+  + evaluate(request: Request, context: Context): PolicyDecision
+}
+
+class PolicyDefinition {
+  + rules: List<Rule>
+  + roles: List<Role>
+  + conditions: List<Condition>
+}
+
+class Request {
+  + content: String
+  + user: User
+  + timestamp: DateTime
+}
+
+class Context {
+  + userRole: Role
+  + userAttributes: Map<String, Any>
+  + environment: Environment
+}
+
+class PolicyDecision {
+  + isAllowed: Boolean
+  + reason: String
+  + restrictions: List<Restriction>
+}
+
+class AuditLogger {
+  + logDecision(decision: PolicyDecision, request: Request): void
+}
+
+LLMService --> PolicyEngine : uses
+PolicyEngine --> Policy : evaluates
+PolicyEngine --> PolicyDefinition : loads
+PolicyEngine --> AuditLogger : logs to
+Policy --> Request : evaluates
+Policy --> Context : uses
+Policy --> PolicyDecision : returns
+
+@enduml 

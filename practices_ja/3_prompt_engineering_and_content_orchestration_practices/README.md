@@ -38,4 +38,8 @@ Prompt Engineering & Content Orchestrations は、プロンプトを単なるテ
 13. **System Prompt Control**
     - System Prompt Controlは、LLMの動作を制御するためのシステムプロンプトを設計するための手法です。
 14. **Idempotent Inference Request**
-    - Idempotent Inference Requestは、同じリクエストを複数回送信しても結果が変わらないように設計するための手法です。
+    - Idempotent Inference Requestは、同じリクエストを複数回送信しても結果が変わらないように設計するための手法です
+15. **Prompt Rewrite**
+    - Prompt Rewriteは、プロンプトを再構築することで、LLMの出力を改善するための手法です。
+16. **Analysis to reuse**
+    - Analysis to reuseは、プロンプトと結果を記録し分析して、知見を再利用を促進するための分析手法です。

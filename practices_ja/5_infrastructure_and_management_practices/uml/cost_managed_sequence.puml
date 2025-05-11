@@ -1,0 +1,45 @@
+@startuml cost_managed_sequence
+
+actor User
+participant "Client\nApplication" as Client
+participant "CostManager" as CostManager
+participant "ModelRouter" as Router
+participant "CostEstimator" as Estimator
+participant "LLM API" as API
+
+User -> Client: Submit Request
+activate Client
+
+Client -> CostManager: Check Budget
+activate CostManager
+CostManager --> Client: Budget Status
+deactivate CostManager
+
+Client -> Estimator: Estimate Tokens
+activate Estimator
+Estimator -> Estimator: Calculate Input Tokens
+Estimator -> Estimator: Estimate Output Tokens
+Estimator --> Client: Token Estimates
+deactivate Estimator
+
+Client -> Router: Route Request
+activate Router
+Router -> Router: Classify Complexity
+Router -> Router: Select Model
+Router -> API: Forward Request
+activate API
+API --> Router: Response
+deactivate API
+Router --> Client: Processed Response
+deactivate Router
+
+Client -> CostManager: Track Usage
+activate CostManager
+CostManager -> CostManager: Update Usage Stats
+CostManager --> Client: Usage Confirmed
+deactivate CostManager
+
+Client --> User: Return Result
+deactivate Client
+
+@enduml 

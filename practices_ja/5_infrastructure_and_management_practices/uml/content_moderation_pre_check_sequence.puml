@@ -1,0 +1,56 @@
+@startuml Content Moderation Pre-check Sequence
+
+actor User
+participant "ContentModerationSystem" as CMS
+participant "ContentModerator" as CM
+participant "ExternalModerationAPI" as API
+participant "SensitiveDataHandler" as SDH
+participant "TokenMapping" as TM
+participant "LLMService" as LLM
+
+User -> CMS: Submit input
+activate CMS
+
+CMS -> CM: checkContent(input)
+activate CM
+CM -> API: moderate(content)
+activate API
+API --> CM: ModerationResult
+deactivate API
+CM --> CMS: ModerationResult
+deactivate CM
+
+alt Violation Detected
+    CMS -> CMS: logViolation()
+    CMS -> CMS: notifyAdmin()
+    CMS --> User: Error Response
+else No Violation
+    CMS -> SDH: maskSensitiveData(input)
+    activate SDH
+    SDH -> TM: storeMapping(original, token)
+    activate TM
+    TM --> SDH: Confirmation
+    deactivate TM
+    SDH --> CMS: MaskedData
+    deactivate SDH
+
+    CMS -> LLM: generateResponse(maskedPrompt)
+    activate LLM
+    LLM --> CMS: Response
+    deactivate LLM
+
+    CMS -> SDH: restoreSensitiveData(response, maskedData)
+    activate SDH
+    SDH -> TM: getOriginal(token)
+    activate TM
+    TM --> SDH: Original Data
+    deactivate TM
+    SDH --> CMS: Restored Response
+    deactivate SDH
+
+    CMS --> User: Final Response
+end
+
+deactivate CMS
+
+@enduml 
