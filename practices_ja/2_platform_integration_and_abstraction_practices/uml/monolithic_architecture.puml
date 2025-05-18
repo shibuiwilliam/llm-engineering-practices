@@ -1,0 +1,40 @@
+@startuml Monolithic Architecture
+
+skinparam componentStyle rectangle
+skinparam backgroundColor white
+skinparam handwritten false
+
+title Monolithic Architecture for LLM Applications
+
+package "Monolithic Application" {
+    [Web Interface] as UI
+    [Business Logic] as BL
+    [LLM Integration] as LLM
+    [Database] as DB
+    [Prompt Management] as PM
+    [Context Management] as CM
+}
+
+UI --> BL : "User Requests"
+BL --> LLM : "Process with LLM"
+BL --> DB : "Store Data"
+BL --> PM : "Manage Prompts"
+BL --> CM : "Maintain Context"
+
+note right of UI
+  Single deployment unit
+  All components share
+  the same process
+end note
+
+note right of LLM
+  LLM calls and
+  response handling
+end note
+
+note right of DB
+  Shared database for
+  all application data
+end note
+
+@enduml 

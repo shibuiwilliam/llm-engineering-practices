@@ -36,4 +36,6 @@ Basic Foundation Practices は、LLMのAPIを安全かつ確実にアプリケ�
 11. **Abstract Factory for Model Clients**
    複数の LLM プロバイダ（OpenAI, Anthropic, OSS モデルなど）を共通インターフェースで扱うファクトリプラクティス。
 12. **Inverted Structured Output**
-   メタプログラミングで動的に出力スキーマを生成し、LLM 自身に Pydantic モデル定義などを返させるプラクティス。  
+   メタプログラミングで動的に出力スキーマを生成し、LLM 自身に Pydantic モデル定義などを返させるプラクティス。
+13. **Inverted Flexibility**
+   自由度の高いLLMをそのままユーザに使わせるのではなく、特定用途に特化したUIやAPIを通じてその力を引き出す設計手法。

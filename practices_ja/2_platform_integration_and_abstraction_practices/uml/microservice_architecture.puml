@@ -1,0 +1,67 @@
+@startuml Microservice Architecture
+
+skinparam componentStyle rectangle
+skinparam backgroundColor white
+skinparam handwritten false
+
+title Microservice Architecture for LLM Applications
+
+package "API Gateway" {
+    [Gateway Service] as GW
+}
+
+package "LLM Services" {
+    [LLM Service 1] as LLM1
+    [LLM Service 2] as LLM2
+    [Prompt Service] as PS
+}
+
+package "Agent Services" {
+    [Agent Orchestrator] as AO
+    [Agent 1] as A1
+    [Agent 2] as A2
+}
+
+package "Data Services" {
+    [Context Service] as CS
+    [State Service] as SS
+}
+
+database "Shared Storage" {
+    [Message Queue] as MQ
+    [Shared Database] as DB
+}
+
+GW --> LLM1 : "API Calls"
+GW --> LLM2 : "API Calls"
+GW --> AO : "Route to Agents"
+
+AO --> A1 : "Delegate Tasks"
+AO --> A2 : "Delegate Tasks"
+AO --> PS : "Get Prompts"
+AO --> CS : "Get Context"
+
+A1 --> LLM1 : "Process"
+A2 --> LLM2 : "Process"
+A1 --> MQ : "Publish Events"
+A2 --> MQ : "Publish Events"
+
+CS --> DB : "Store Context"
+SS --> DB : "Store State"
+
+note right of GW
+  Single entry point
+  for all services
+end note
+
+note right of AO
+  Coordinates between
+  different agents
+end note
+
+note right of MQ
+  Event-driven
+  communication
+end note
+
+@enduml 

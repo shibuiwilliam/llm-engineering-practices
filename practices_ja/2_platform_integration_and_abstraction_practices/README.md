@@ -41,3 +41,5 @@ Platform Integration & Abstraction Practices は、LLM APIを用いて複雑な�
     コア API 層とプラグイン層を分離し、安定コアと外部拡張を共存させる多層アーキテクチャ。
 15. **Multi-Region Fail-over**
     地理的に分散したモデルサービスへ自動切り替えし、災害時の継続稼働を確保。
+16. **Architecture Selection for LLM-based Systems**
+      Monolithic、Modular Monolith、Microservice の 3 つのアーキテクチャスタイルを適切に使い分ける。

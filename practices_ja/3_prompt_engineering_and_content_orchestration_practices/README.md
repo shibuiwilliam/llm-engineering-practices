@@ -43,3 +43,7 @@ Prompt Engineering & Content Orchestrations は、プロンプトを単なるテ
     - Prompt Rewriteは、プロンプトを再構築することで、LLMの出力を改善するための手法です。
 16. **Analysis to reuse**
     - Analysis to reuseは、プロンプトと結果を記録し分析して、知見を再利用を促進するための分析手法です。
+17. **Synthetic Prompt Testing**
+    - Synthetic Prompt Testingは、合成データを用いてプロンプトの品質を検証するための手法です。
+18. **Predictive subprompt test selection**
+    - Predictive Subprompt Test Selectionは、プロンプトを分割し、各サブプロンプトの変更とテストデータの成否の組み合わせを分析することで、効率的なテスト順序を決定するための手法です。

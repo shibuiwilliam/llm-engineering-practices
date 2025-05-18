@@ -1,0 +1,56 @@
+@startuml Modular Monolith Architecture
+
+skinparam componentStyle rectangle
+skinparam backgroundColor white
+skinparam handwritten false
+
+title Modular Monolith Architecture for LLM Applications
+
+package "Modular Monolith Application" {
+    package "Web Module" {
+        [Web Interface] as UI
+        [API Gateway] as API
+    }
+    
+    package "Core Module" {
+        [Business Logic] as BL
+        [Orchestration] as ORCH
+    }
+    
+    package "LLM Module" {
+        [LLM Integration] as LLM
+        [Prompt Management] as PM
+        [Context Management] as CM
+    }
+    
+    package "Data Module" {
+        [Database] as DB
+        [Shared Memory] as SM
+    }
+}
+
+UI --> API : "User Requests"
+API --> BL : "Route Requests"
+BL --> ORCH : "Coordinate"
+ORCH --> LLM : "Process with LLM"
+ORCH --> PM : "Manage Prompts"
+ORCH --> CM : "Maintain Context"
+BL --> DB : "Store Data"
+BL --> SM : "Share State"
+
+note right of UI
+  Modular structure within
+  a single deployment
+end note
+
+note right of ORCH
+  Coordinates between
+  different modules
+end note
+
+note right of SM
+  Shared memory for
+  inter-module communication
+end note
+
+@enduml 
